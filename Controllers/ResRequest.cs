@@ -1,5 +1,6 @@
 ﻿using hotmailCheck.Models;
 using Newtonsoft.Json;
+using OpenQA.Selenium;
 using RestSharp;
 using SeleniumUndetectedChromeDriver;
 using System;
@@ -9,6 +10,8 @@ using System.Net;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using ICredentials = System.Net.ICredentials;
 
 namespace hotmailCheck.Controllers
 {
@@ -83,9 +86,19 @@ namespace hotmailCheck.Controllers
             
         }
 
-        public EmailAddress getEmail(string cookie)
+        public EmailAddress getEmail(string cookie, string proxy)
         {
-            var client = new RestClient("https://www.minuteinbox.com/index/index");
+            var options = new RestClientOptions("https://www.minuteinbox.com/index/index");
+            if (!string.IsNullOrEmpty(proxy))
+            {
+                options = new RestClientOptions("https://www.minuteinbox.com/index/index")
+                {
+                    Proxy = GetWebProxy(proxy),
+                    ThrowOnAnyError = true,
+                    MaxTimeout = 10000
+                };
+            }
+            var client = new RestClient(options);
             var request = new RestRequest();
             request.AddHeader("X-Requested-With", "XMLHttpRequest");
             request.AddHeader("accept", "application/json, text/javascript, */*; q=0.01");
@@ -112,9 +125,19 @@ namespace hotmailCheck.Controllers
             }
         }
 
-        public async Task<string> returnEmail(string cookie, string addressMail)
+        public async Task<string> returnEmail(string cookie, string addressMail, string proxy)
         {
-            var client = new RestClient("https://www.minuteinbox.com/index/new-email/");
+            var options = new RestClientOptions("https://www.minuteinbox.com/index/new-email/");
+            if (!string.IsNullOrEmpty(proxy))
+            {
+                options = new RestClientOptions("https://www.minuteinbox.com/index/new-email/")
+                {
+                    Proxy = GetWebProxy(proxy),
+                    ThrowOnAnyError = true,
+                    MaxTimeout = 10000
+                };
+            }
+            var client = new RestClient(options);
             var request = new RestRequest();
             request.AddHeader("X-Requested-With", "XMLHttpRequest");
             request.AddHeader("accept", "application/json, text/javascript, */*; q=0.01");
@@ -131,7 +154,7 @@ namespace hotmailCheck.Controllers
             request.AddHeader("sec-ch-ua-platform", "\"Windows\"");
             request.AddHeader("sec-ch-ua", "\"Not_A Brand\";v=\"8\", \"Chromium\";v=\"119\", \"Google Chrome\";v=\"119\"");
             request.Method = Method.Post;
-            string json = string.Format("emailInput={0}&format=json", addressMail);
+            string json = string.Format("emailInput={0}&format=json", addressMail.Split('@')[0]);
             request.AddParameter("application/json", json, ParameterType.RequestBody);
             var response = await client.ExecuteAsync(request);
             if (response.StatusCode == HttpStatusCode.OK)
@@ -142,15 +165,25 @@ namespace hotmailCheck.Controllers
             {
                 string[] slipMi = cookie.Split("MI=");
                 string[] duoiSlipMi = slipMi[1].Split("%40milkcreeks.com");
-                string newCookie = slipMi[0] + "MI=" + addressMail + "%40milkcreeks.com" + duoiSlipMi[1];
-                deleteEmail(newCookie);
+                string newCookie = slipMi[0] + "MI=" + Uri.EscapeUriString(addressMail) + duoiSlipMi[1];
+                deleteEmail(newCookie,proxy);
                 return newCookie;
             }
         }
 
-        public async Task<string> readMail(string cookie, string url)
+        public async Task<string> readMail(string cookie, string url, string proxy)
         {
-            var client = new RestClient(url);
+            var options = new RestClientOptions(url);
+            if (!string.IsNullOrEmpty(proxy))
+            {
+                options = new RestClientOptions(url)
+                {
+                    Proxy = GetWebProxy(proxy),
+                    ThrowOnAnyError = true,
+                    MaxTimeout = 10000
+                };
+            }
+            var client = new RestClient(options);
             var request = new RestRequest();
             request.AddHeader("X-Requested-With", "XMLHttpRequest");
             request.AddHeader("accept", "application/json, text/javascript, */*; q=0.01");
@@ -178,13 +211,23 @@ namespace hotmailCheck.Controllers
             }
         }
 
-        public bool deleteEmail(string cookie)
+        public bool deleteEmail(string cookie, string proxy)
         {
             if (string.IsNullOrEmpty(cookie))
             {
                 return false;
             }
-            var client = new RestClient("https://www.minuteinbox.com/delete");
+            var options = new RestClientOptions("https://www.minuteinbox.com/delete");
+            if (!string.IsNullOrEmpty(proxy))
+            {
+                options = new RestClientOptions("https://www.minuteinbox.com/delete")
+                {
+                    Proxy = GetWebProxy(proxy),
+                    ThrowOnAnyError = true,
+                    MaxTimeout = 10000
+                };
+            }
+            var client = new RestClient(options);
             var request = new RestRequest();
             request.AddHeader("X-Requested-With", "XMLHttpRequest");
             request.AddHeader("accept", "application/json, text/javascript, */*; q=0.01");
@@ -210,9 +253,19 @@ namespace hotmailCheck.Controllers
             }
         }
 
-        public async Task<List<Mail>> getMailInbox (string cookie)
+        public async Task<List<Mail>> getMailInbox (string cookie, string proxy)
         {
-            var client = new RestClient("https://www.minuteinbox.com/index/refresh");
+            var options = new RestClientOptions("https://www.minuteinbox.com/index/refresh");
+            if (!string.IsNullOrEmpty(proxy))
+            {
+                options = new RestClientOptions("https://www.minuteinbox.com/index/refresh")
+                {
+                    Proxy = GetWebProxy(proxy),
+                    ThrowOnAnyError = true,
+                    MaxTimeout = 10000
+                };
+            }
+            var client = new RestClient(options);
             var request = new RestRequest();
             request.AddHeader("X-Requested-With", "XMLHttpRequest");
             request.AddHeader("accept", "application/json, text/javascript, */*; q=0.01");
@@ -237,6 +290,67 @@ namespace hotmailCheck.Controllers
             {
                 return null;
             }
+        }
+
+        public async Task<List<Mail>> getMailInboxWithWebClient(string cookie, string proxy)
+        {
+            var options = new RestClientOptions("https://www.minuteinbox.com/index/refresh");
+            if (!string.IsNullOrEmpty(proxy))
+            {
+                options = new RestClientOptions("https://www.minuteinbox.com/index/refresh")
+                {
+                    Proxy = GetWebProxy(proxy),
+                    ThrowOnAnyError = true,
+                    MaxTimeout = 10000
+                };
+            }
+            var client = new RestClient(options);
+            var request = new RestRequest();
+            request.AddHeader("X-Requested-With", "XMLHttpRequest");
+            request.AddHeader("accept", "application/json, text/javascript, */*; q=0.01");
+            request.AddHeader("Connection", "keep-alive");
+            request.AddHeader("accept-language", "vi,en-US;q=0.9,en;q=0.8");
+            request.AddHeader("Sec-Fetch-Mode", "cors");
+            request.AddHeader("Cookie", cookie);
+            request.AddHeader("Sec-Fetch-Site", "same-origin");
+            request.AddHeader("Sec-Fetch-Dest", "empty");
+            request.AddHeader("referer", "https://www.minuteinbox.com/");
+            request.AddHeader("sec-ch-ua-mobile", "?0");
+            request.AddHeader("sec-ch-ua-platform", "\"Windows\"");
+            request.AddHeader("sec-ch-ua", "\"Not_A Brand\";v=\"8\", \"Chromium\";v=\"119\", \"Google Chrome\";v=\"119\"");
+            request.Method = Method.Get;
+            var response = await client.ExecuteAsync(request);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                List<Mail> mail = JsonConvert.DeserializeObject<List<Mail>>(response.Content);
+                return mail;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public IWebProxy GetWebProxy(string proxyAcc)
+        {
+            var proxy = new WebProxy();
+            if (!string.IsNullOrEmpty(proxyAcc))
+            {
+                if(proxyAcc.Split(':').Length > 2)
+                {
+                    var proxyURI = new Uri(string.Format("http://{0}:{1}", proxyAcc.Split(':')[0], proxyAcc.Split(':')[1]));
+                    ICredentials credentials = new NetworkCredential(proxyAcc.Split(':')[2], proxyAcc.Split(':')[3]);
+                    proxy = new WebProxy(proxyURI, true, null, credentials);
+
+                }
+                else {
+                    var proxyURI = new Uri(string.Format("{0}:{1}", proxyAcc.Split(':')[0], proxyAcc.Split(':')[1]));
+                    //Set credentials
+                    ICredentials credentials = CredentialCache.DefaultNetworkCredentials;
+                    proxy = new WebProxy(proxyURI, true, null, credentials);
+                }
+            }
+            return proxy;
         }
     }
 }

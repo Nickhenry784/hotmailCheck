@@ -40,10 +40,10 @@ namespace hotmailCheck.Utils
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        public async Task<string> getCodeMail(string cookie, string urlDownload)
+        public async Task<string> getCodeMail(string cookie, string urlDownload, string proxy)
         {
             ResRequest resRequest = new ResRequest();
-            string page = await resRequest.readMail(cookie,urlDownload);
+            string page = await resRequest.readMail(cookie,urlDownload, proxy);
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(page);
 

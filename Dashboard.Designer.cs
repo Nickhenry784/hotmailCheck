@@ -119,6 +119,8 @@
             dataGridViewTextBoxColumn15 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn16 = new DataGridViewTextBoxColumn();
             groupBox7 = new GroupBox();
+            numericUpDown15 = new NumericUpDown();
+            label10 = new Label();
             checkBox1 = new CheckBox();
             label11 = new Label();
             numericUpDown8 = new NumericUpDown();
@@ -138,8 +140,6 @@
             label15 = new Label();
             label16 = new Label();
             label17 = new Label();
-            label10 = new Label();
-            numericUpDown15 = new NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
@@ -170,11 +170,11 @@
             groupBox8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView5).BeginInit();
             groupBox7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown15).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown8).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown9).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown10).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown11).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown15).BeginInit();
             SuspendLayout();
             // 
             // dataGridView1
@@ -393,6 +393,7 @@
             numericUpDown14.Size = new Size(58, 31);
             numericUpDown14.TabIndex = 29;
             numericUpDown14.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            numericUpDown14.ValueChanged += numericUpDown14_ValueChanged;
             // 
             // label9
             // 
@@ -630,6 +631,7 @@
             numericUpDown13.Size = new Size(52, 31);
             numericUpDown13.TabIndex = 25;
             numericUpDown13.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            numericUpDown13.ValueChanged += numericUpDown13_ValueChanged;
             // 
             // label8
             // 
@@ -1148,6 +1150,27 @@
             groupBox7.TabStop = false;
             groupBox7.Text = "Setting";
             // 
+            // numericUpDown15
+            // 
+            numericUpDown15.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
+            numericUpDown15.Location = new Point(835, 33);
+            numericUpDown15.Maximum = new decimal(new int[] { 1569325056, 23283064, 0, 0 });
+            numericUpDown15.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numericUpDown15.Name = "numericUpDown15";
+            numericUpDown15.Size = new Size(90, 31);
+            numericUpDown15.TabIndex = 27;
+            numericUpDown15.Value = new decimal(new int[] { 10, 0, 0, 0 });
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
+            label10.Location = new Point(724, 36);
+            label10.Name = "label10";
+            label10.Size = new Size(105, 25);
+            label10.TabIndex = 26;
+            label10.Text = "Quality Acc:";
+            // 
             // checkBox1
             // 
             checkBox1.AutoSize = true;
@@ -1362,27 +1385,6 @@
             label17.TabIndex = 14;
             label17.Text = "Day Left:";
             // 
-            // label10
-            // 
-            label10.AutoSize = true;
-            label10.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label10.Location = new Point(724, 36);
-            label10.Name = "label10";
-            label10.Size = new Size(105, 25);
-            label10.TabIndex = 26;
-            label10.Text = "Quality Acc:";
-            // 
-            // numericUpDown15
-            // 
-            numericUpDown15.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
-            numericUpDown15.Location = new Point(835, 33);
-            numericUpDown15.Maximum = new decimal(new int[] { 1569325056, 23283064, 0, 0 });
-            numericUpDown15.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            numericUpDown15.Name = "numericUpDown15";
-            numericUpDown15.Size = new Size(90, 31);
-            numericUpDown15.TabIndex = 27;
-            numericUpDown15.Value = new decimal(new int[] { 10, 0, 0, 0 });
-            // 
             // Dashboard
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -1433,11 +1435,11 @@
             ((System.ComponentModel.ISupportInitialize)dataGridView5).EndInit();
             groupBox7.ResumeLayout(false);
             groupBox7.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown15).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown8).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown9).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown10).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown11).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown15).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }

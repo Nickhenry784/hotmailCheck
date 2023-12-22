@@ -594,12 +594,12 @@ namespace hotmailCheck
                         cookie = utils.ToDebugString(keyValues);
                         addLogToDataGridView4(index, 6, "Phục hồi Mail");
                         string username = dataGridView4.Rows[index].Cells[1].Value.ToString();
-                        string mailPhucHoi = resRequest.returnEmail(cookie, username.Split('@')[0].ToString()).Result;
+                        string mailPhucHoi = resRequest.returnEmail(cookie, username, dataGridView4.Rows[index].Cells[4].Value.ToString()).Result;
                         while (!mailPhucHoi.Equals("ok"))
                         {
                             addLogToDataGridView4(index, 6, "Phục hồi Mail lại");
                             cookie = mailPhucHoi;
-                            mailPhucHoi = resRequest.returnEmail(cookie, username.Split('@')[0].ToString()).Result;
+                            mailPhucHoi = resRequest.returnEmail(cookie, username, dataGridView4.Rows[index].Cells[4].Value.ToString()).Result;
                         }
                         addLogToDataGridView4(index, 6, "Phục hồi Mail thành công");
                         Thread.Sleep(2000);
@@ -611,7 +611,7 @@ namespace hotmailCheck
                         BarnesAutomatic barnesAutomatic = new BarnesAutomatic();
 
                         string password = dataGridView4.Rows[index].Cells[2].Value.ToString();
-                        string resultAutomatic = barnesAutomatic.loginBarnes(driver, cookie, username, password);
+                        string resultAutomatic = barnesAutomatic.loginBarnes(driver, cookie, username, password, dataGridView4.Rows[index].Cells[4].Value.ToString());
                         if (!string.IsNullOrEmpty(resultAutomatic))
                         {
                             if (resultAutomatic.Equals("Login thành công"))
@@ -931,7 +931,7 @@ namespace hotmailCheck
                     }
                     catch (Exception err)
                     {
-                        resRequest.deleteEmail(cookie);
+                        resRequest.deleteEmail(cookie, dataGridView4.Rows[index].Cells[4].Value.ToString());
                         addLogToDataGridView4(index, 6, "Có lỗi không xác định, thoát Thread!");
                         utils.WriteLogError(err.Message.ToString());
                         dataGridView4.Invoke(new Action(() =>
@@ -949,7 +949,7 @@ namespace hotmailCheck
                     }
                     finally
                     {
-                        resRequest.deleteEmail(cookie);
+                        resRequest.deleteEmail(cookie, dataGridView4.Rows[index].Cells[4].Value.ToString());
                         try
                         {
                             driver.Close();
@@ -980,13 +980,13 @@ namespace hotmailCheck
         //signupBarnesAndAddCC
         public async void signupBarnesAndAddCC(int thread, int posX, int posY, bool signUpNoCheck)
         {
-            while (listRun.Count < (int) numericUpDown15.Value)
+            while (listRun.Count < (int)numericUpDown15.Value)
             {
                 if (!isRun)
                 {
                     return;
                 }
-                if(listRun.Count > (int)numericUpDown15.Value)
+                if (listRun.Count > (int)numericUpDown15.Value)
                 {
                     return;
                 }
@@ -1023,7 +1023,7 @@ namespace hotmailCheck
                 {
                     listRun.Enqueue(index);
                 }
-                catch {  }
+                catch { }
                 addLogToDataGridView5(index, 4, "Setting Chrome!");
                 var options = new ChromeOptions();
                 string userAgent = listUserAgent[Faker.RandomNumber.Next(0, listUserAgent.Count - 1)];
@@ -1075,7 +1075,7 @@ namespace hotmailCheck
                         BarnesAutomatic barnesAutomatic = new BarnesAutomatic();
                         barnesAutomatic.signUpAccount(driver, email, "Newyork123@", fisrtName, lastName);
                         Thread.Sleep(2000);
-                        List<Mail> mailInput = resRequest.getMailInbox(cookie).Result;
+                        List<Mail> mailInput = resRequest.getMailInbox(cookie, proxyItems).Result;
                         if (mailInput.Count != 1)
                         {
                             dataGridView5.Invoke(new Action(() =>
@@ -1403,7 +1403,7 @@ namespace hotmailCheck
                     }
                     catch (Exception err)
                     {
-                        resRequest.deleteEmail(cookie);
+                        resRequest.deleteEmail(cookie, proxyItems);
                         addLogToDataGridView5(index, 4, "Có lỗi không xác định, thoát Thread!");
                         utils.WriteLogError(err.Message.ToString());
                         dataGridView5.Invoke(new Action(() =>
@@ -1421,7 +1421,7 @@ namespace hotmailCheck
                     }
                     finally
                     {
-                        resRequest.deleteEmail(cookie);
+                        resRequest.deleteEmail(cookie, proxyItems);
                         try
                         {
                             driver.Close();
@@ -2617,6 +2617,22 @@ namespace hotmailCheck
                     loadDataGridViewCC(dataGridView6);
                     loadDataProxy();
                 }
+            }
+        }
+
+        private void numericUpDown14_ValueChanged(object sender, EventArgs e)
+        {
+            if ((int)numericUpDown14.Value > dataGridView1.Rows.Count)
+            {
+                numericUpDown14.Value = dataGridView1.Rows.Count;
+            }
+        }
+
+        private void numericUpDown13_ValueChanged(object sender, EventArgs e)
+        {
+            if ((int)numericUpDown13.Value > dataGridView4.Rows.Count)
+            {
+                numericUpDown13.Value = dataGridView4.Rows.Count;
             }
         }
     }

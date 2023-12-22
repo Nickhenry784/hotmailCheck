@@ -23,7 +23,7 @@ namespace hotmailCheck.Controllers
     {
         public UtilsController utils = new UtilsController();
         public ResRequest resRequest = new ResRequest();
-        public string checkLogin(ChromeDriver driver, string cookie)
+        public string checkLogin(ChromeDriver driver, string cookie, string proxy)
         {
             string text = string.Empty;
             try
@@ -31,7 +31,7 @@ namespace hotmailCheck.Controllers
                 WebDriverWait driverWait1 = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
                 driverWait1.Until(ExpectedConditions.ElementExists(By.Id("addPhoneCodeForm")));
                 string code = "0";
-                List<Mail> mailInput = resRequest.getMailInbox(cookie).Result;
+                List<Mail> mailInput = resRequest.getMailInbox(cookie, proxy).Result;
                 if (mailInput.Count != 0)
                 {
                     foreach(Mail mail in mailInput) {
@@ -45,14 +45,14 @@ namespace hotmailCheck.Controllers
                             if (downloadLink != null)
                             {
                                 string downloadUrl = downloadLink.GetAttributeValue("href", "");
-                                code = utils.getCodeMail(cookie, "https://www.minuteinbox.com" + downloadUrl).Result;
+                                code = utils.getCodeMail(cookie, "https://www.minuteinbox.com" + downloadUrl, proxy).Result;
                             }
                         }
                     }
                 }
                 while (code.Length != 6)
                 {
-                    mailInput = resRequest.getMailInbox(cookie).Result;
+                    mailInput = resRequest.getMailInbox(cookie, proxy).Result;
                     if (mailInput.Count != 0)
                     {
                         foreach (Mail mail in mailInput)
@@ -67,7 +67,7 @@ namespace hotmailCheck.Controllers
                                 if (downloadLink != null)
                                 {
                                     string downloadUrl = downloadLink.GetAttributeValue("href", "");
-                                    code = utils.getCodeMail(cookie, "https://www.minuteinbox.com" + downloadUrl).Result;
+                                    code = utils.getCodeMail(cookie, "https://www.minuteinbox.com" + downloadUrl, proxy).Result;
                                 }
                             }
                         }
@@ -156,7 +156,7 @@ namespace hotmailCheck.Controllers
             return text;
         }
 
-        public string loginBarnes(ChromeDriver driver,string cookie, string username, string password)
+        public string loginBarnes(ChromeDriver driver,string cookie, string username, string password, string proxy)
         {
             try
             {
@@ -189,7 +189,7 @@ namespace hotmailCheck.Controllers
                 Thread.Sleep(5000);
                 _ = driver.Manage().Timeouts().ImplicitWait;
                 driver.SwitchTo().DefaultContent();
-                string checkLoginResult = checkLogin(driver,cookie);
+                string checkLoginResult = checkLogin(driver,cookie, proxy);
                 if (checkLoginResult != null)
                 {
                     if (checkLoginResult.Equals("Đã login"))
@@ -216,27 +216,6 @@ namespace hotmailCheck.Controllers
         public bool verifyCodeMail(ChromeDriver driver, string sessionID, string token)
         {
             string code = string.Empty;
-            DropMailInput dropMailInput = resRequest.GetMailInput(sessionID, token).Result;
-            if (dropMailInput != null)
-            {
-                SessionMailReceived sessionMail = dropMailInput.data.sessionMailReceived;
-                if (sessionMail.downloadUrl != null)
-                {
-                    code = utils.getCodeMail(token,sessionMail.downloadUrl).Result;
-                }
-            }
-            while(code.Length != 6)
-            {
-                dropMailInput = resRequest.GetMailInput(sessionID, token).Result;
-                if (dropMailInput != null)
-                {
-                    SessionMailReceived sessionMail = dropMailInput.data.sessionMailReceived;
-                    if (sessionMail.downloadUrl != null)
-                    {
-                        code = utils.getCodeMail(token, sessionMail.downloadUrl).Result;
-                    }
-                }
-            }
             try
             {
                 WebDriverWait driverWait1 = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
@@ -330,11 +309,11 @@ namespace hotmailCheck.Controllers
                 }
                 catch { }
                 driver.FindElement(By.XPath("//button[@class='navbar-toggler ']")).Click();
-                Thread.Sleep(2000);
+                Thread.Sleep(3000);
                 driver.FindElement(By.Id("rhfCategoryFlyout_account")).Click();
-                Thread.Sleep(2000);
+                Thread.Sleep(3000);
                 driver.FindElement(By.XPath("//div[@class='New-modal-opener-link']")).Click();
-                Thread.Sleep(2000);
+                Thread.Sleep(3000);
                 WebDriverWait driverWait1 = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
                 driverWait1.Until(ExpectedConditions.ElementExists(By.XPath("//iframe[@title='Sign in or Create an Account']")));
                 IWebElement iframe = driver.FindElement(By.XPath("//iframe[@title='Sign in or Create an Account']"));
@@ -349,23 +328,23 @@ namespace hotmailCheck.Controllers
                 IWebElement element = driver.FindElement(By.Id("fName"));
                 driver.ExecuteScript("arguments[0].scrollIntoView(true);", element);
                 element.SendKeys(firstName);
-                Thread.Sleep(2000);
+                Thread.Sleep(1000);
                 element = driver.FindElement(By.Id("lName"));
                 driver.ExecuteScript("arguments[0].scrollIntoView(true);", element);
                 element.SendKeys(lastName);
-                Thread.Sleep(2000);
+                Thread.Sleep(1000);
                 element = driver.FindElement(By.Id("email"));
                 driver.ExecuteScript("arguments[0].scrollIntoView(true);", element);
                 element.SendKeys(email);
-                Thread.Sleep(2000);
+                Thread.Sleep(1000);
                 element = driver.FindElement(By.Id("password"));
                 driver.ExecuteScript("arguments[0].scrollIntoView(true);", element);
                 element.SendKeys(password);
-                Thread.Sleep(2000);
+                Thread.Sleep(1000);
                 element = driver.FindElement(By.Id("confPassword"));
                 driver.ExecuteScript("arguments[0].scrollIntoView(true);", element);
                 element.SendKeys(password);
-                Thread.Sleep(2000);
+                Thread.Sleep(1000);
                 element = driver.FindElement(By.XPath("//div[@class='select-menu select-menu--full-width']"));
                 driver.ExecuteScript("arguments[0].scrollIntoView(true);", element);
                 element.Click();
@@ -373,15 +352,15 @@ namespace hotmailCheck.Controllers
                 element = driver.FindElement(By.Id("securityQuestion-option-1"));
                 driver.ExecuteScript("arguments[0].scrollIntoView(true);", element);
                 element.Click();
-                Thread.Sleep(2000);
+                Thread.Sleep(1000);
                 element = driver.FindElement(By.Id("securityAnswer"));
                 driver.ExecuteScript("arguments[0].scrollIntoView(true);", element);
                 element.SendKeys("New York");
-                Thread.Sleep(2000);
+                Thread.Sleep(1000);
                 element = driver.FindElement(By.XPath("//span[@class='checkbox__box ']"));
                 driver.ExecuteScript("arguments[0].scrollIntoView(true);", element);
                 element.Click();
-                Thread.Sleep(2000);
+                Thread.Sleep(1000);
                 element = driver.FindElement(By.Id("btnCreateAccountDummy"));
                 driver.ExecuteScript("arguments[0].scrollIntoView(true);", element);
                 element.Click();
