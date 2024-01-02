@@ -265,7 +265,9 @@ namespace hotmailCheck.Controllers
                 command.ExecuteNonQuery();
                 closeConnection();
             }
-            catch { }
+            catch {
+                Console.WriteLine("Error");
+            }
 
         }
 

@@ -25,7 +25,6 @@ namespace hotmailCheck
                 SaveData saveData = new SaveData();
                 SQLiteDataReader activeFormResult = saveData.loadDataKey();
                 ActiveKey activeKey = new ActiveKey();
-                //LRYVQ-WOJMN-PAKJV-JLFJC
                 while (activeFormResult.Read())
                 {
                     activeKey.key = activeFormResult.GetString(1);

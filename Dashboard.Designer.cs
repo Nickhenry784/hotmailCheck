@@ -388,6 +388,7 @@
             // 
             numericUpDown14.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
             numericUpDown14.Location = new Point(852, 30);
+            numericUpDown14.Maximum = new decimal(new int[] { 1569325056, 23283064, 0, 0 });
             numericUpDown14.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericUpDown14.Name = "numericUpDown14";
             numericUpDown14.Size = new Size(58, 31);
@@ -419,6 +420,7 @@
             // 
             numericUpDown12.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
             numericUpDown12.Location = new Point(655, 90);
+            numericUpDown12.Maximum = new decimal(new int[] { -1530494976, 232830, 0, 0 });
             numericUpDown12.Minimum = new decimal(new int[] { 5, 0, 0, 0 });
             numericUpDown12.Name = "numericUpDown12";
             numericUpDown12.Size = new Size(66, 31);
@@ -442,6 +444,7 @@
             numericUpDown3.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
             numericUpDown3.Location = new Point(819, 90);
             numericUpDown3.Margin = new Padding(5);
+            numericUpDown3.Maximum = new decimal(new int[] { -727379968, 232, 0, 0 });
             numericUpDown3.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericUpDown3.Name = "numericUpDown3";
             numericUpDown3.Size = new Size(62, 31);
@@ -464,6 +467,7 @@
             numericUpDown2.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
             numericUpDown2.Location = new Point(1185, 30);
             numericUpDown2.Margin = new Padding(5);
+            numericUpDown2.Maximum = new decimal(new int[] { 1410065408, 2, 0, 0 });
             numericUpDown2.Minimum = new decimal(new int[] { 10, 0, 0, 0 });
             numericUpDown2.Name = "numericUpDown2";
             numericUpDown2.Size = new Size(59, 31);
@@ -486,6 +490,7 @@
             numericUpDown1.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
             numericUpDown1.Location = new Point(1066, 29);
             numericUpDown1.Margin = new Padding(5);
+            numericUpDown1.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
             numericUpDown1.Minimum = new decimal(new int[] { 5, 0, 0, 0 });
             numericUpDown1.Name = "numericUpDown1";
             numericUpDown1.Size = new Size(63, 31);
@@ -626,6 +631,7 @@
             // 
             numericUpDown13.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
             numericUpDown13.Location = new Point(847, 36);
+            numericUpDown13.Maximum = new decimal(new int[] { -1530494976, 232830, 0, 0 });
             numericUpDown13.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericUpDown13.Name = "numericUpDown13";
             numericUpDown13.Size = new Size(52, 31);
@@ -659,6 +665,7 @@
             numericUpDown7.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
             numericUpDown7.Location = new Point(648, 91);
             numericUpDown7.Margin = new Padding(5);
+            numericUpDown7.Maximum = new decimal(new int[] { 10000000, 0, 0, 0 });
             numericUpDown7.Minimum = new decimal(new int[] { 5, 0, 0, 0 });
             numericUpDown7.Name = "numericUpDown7";
             numericUpDown7.Size = new Size(56, 28);
@@ -670,6 +677,7 @@
             numericUpDown6.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
             numericUpDown6.Location = new Point(1034, 35);
             numericUpDown6.Margin = new Padding(5);
+            numericUpDown6.Maximum = new decimal(new int[] { -727379968, 232, 0, 0 });
             numericUpDown6.Minimum = new decimal(new int[] { 5, 0, 0, 0 });
             numericUpDown6.Name = "numericUpDown6";
             numericUpDown6.Size = new Size(71, 28);
@@ -693,6 +701,7 @@
             numericUpDown4.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
             numericUpDown4.Location = new Point(805, 91);
             numericUpDown4.Margin = new Padding(5);
+            numericUpDown4.Maximum = new decimal(new int[] { -727379968, 232, 0, 0 });
             numericUpDown4.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericUpDown4.Name = "numericUpDown4";
             numericUpDown4.Size = new Size(56, 28);
@@ -715,6 +724,7 @@
             numericUpDown5.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
             numericUpDown5.Location = new Point(1162, 35);
             numericUpDown5.Margin = new Padding(5);
+            numericUpDown5.Maximum = new decimal(new int[] { 1316134912, 2328, 0, 0 });
             numericUpDown5.Minimum = new decimal(new int[] { 10, 0, 0, 0 });
             numericUpDown5.Name = "numericUpDown5";
             numericUpDown5.Size = new Size(75, 28);
@@ -1199,6 +1209,7 @@
             numericUpDown8.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
             numericUpDown8.Location = new Point(507, 92);
             numericUpDown8.Margin = new Padding(5);
+            numericUpDown8.Maximum = new decimal(new int[] { -727379968, 232, 0, 0 });
             numericUpDown8.Minimum = new decimal(new int[] { 5, 0, 0, 0 });
             numericUpDown8.Name = "numericUpDown8";
             numericUpDown8.Size = new Size(63, 28);
@@ -1210,6 +1221,7 @@
             numericUpDown9.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
             numericUpDown9.Location = new Point(1045, 35);
             numericUpDown9.Margin = new Padding(5);
+            numericUpDown9.Maximum = new decimal(new int[] { 1215752192, 23, 0, 0 });
             numericUpDown9.Minimum = new decimal(new int[] { 5, 0, 0, 0 });
             numericUpDown9.Name = "numericUpDown9";
             numericUpDown9.Size = new Size(71, 28);
@@ -1233,6 +1245,7 @@
             numericUpDown10.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
             numericUpDown10.Location = new Point(643, 35);
             numericUpDown10.Margin = new Padding(5);
+            numericUpDown10.Maximum = new decimal(new int[] { -727379968, 232, 0, 0 });
             numericUpDown10.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericUpDown10.Name = "numericUpDown10";
             numericUpDown10.Size = new Size(56, 28);
@@ -1255,6 +1268,7 @@
             numericUpDown11.Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
             numericUpDown11.Location = new Point(1173, 35);
             numericUpDown11.Margin = new Padding(5);
+            numericUpDown11.Maximum = new decimal(new int[] { 1316134912, 2328, 0, 0 });
             numericUpDown11.Minimum = new decimal(new int[] { 10, 0, 0, 0 });
             numericUpDown11.Name = "numericUpDown11";
             numericUpDown11.Size = new Size(75, 28);

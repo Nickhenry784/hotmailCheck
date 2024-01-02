@@ -77,9 +77,6 @@ namespace hotmailCheck.Controllers
                     addLogToDataGridView1(dataGridView1,index, 6, "Send ZipCode");
                     driver.FindElement(By.Id("postal_code")).Clear();
                     driver.FindElement(By.Id("postal_code")).SendKeys(infor.address.Zipcode.Substring(2));
-                    Thread.Sleep(1000);
-                    addLogToDataGridView1(dataGridView1,index, 6, "Send ccv");
-                    driver.FindElement(By.Id("cvvToken")).SendKeys("111");
                     return true;
                 }
             }

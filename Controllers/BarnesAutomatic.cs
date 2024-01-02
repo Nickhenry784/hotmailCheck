@@ -543,17 +543,19 @@ namespace hotmailCheck.Controllers
             catch { }
         }
 
-        public void addShipping(ChromeDriver driver, Information infor, int index)
+        public void addShipping(ChromeDriver driver, Information infor)
         {
             try
             {
                 IWebElement element1 = null;
                 Thread.Sleep(1000);
                 element1 = driver.FindElement(By.Name("/atg/commerce/order/purchase/ShippingInfoFormHandler.shipContactInfo.address1"));
+                element1.Clear();
                 Thread.Sleep(500);
                 driver.FindElement(By.Name("/atg/commerce/order/purchase/ShippingInfoFormHandler.shipContactInfo.address1")).SendKeys(infor.address.street.Substring(2));
                 Thread.Sleep(1000);
                 element1 = driver.FindElement(By.Name("/atg/commerce/order/purchase/ShippingInfoFormHandler.shipContactInfo.city"));
+                element1.Clear();
                 driver.ExecuteScript("arguments[0].scrollIntoView(true);", element1);
                 Thread.Sleep(500);
                 driver.FindElement(By.Name("/atg/commerce/order/purchase/ShippingInfoFormHandler.shipContactInfo.city")).SendKeys(infor.address.city.Substring(2));
@@ -575,11 +577,13 @@ namespace hotmailCheck.Controllers
                 element1 = driver.FindElement(By.Name("/atg/commerce/order/purchase/ShippingInfoFormHandler.shipContactInfo.postalCode"));
                 driver.ExecuteScript("arguments[0].scrollIntoView(true);", element1);
                 Thread.Sleep(500);
+                element1.Clear();
                 driver.FindElement(By.Name("/atg/commerce/order/purchase/ShippingInfoFormHandler.shipContactInfo.postalCode")).SendKeys(infor.address.Zipcode.Substring(2));
                 Thread.Sleep(2000);
                 element1 = driver.FindElement(By.Name("/atg/commerce/order/purchase/ShippingInfoFormHandler.shipContactInfo.phoneNumber"));
                 driver.ExecuteScript("arguments[0].scrollIntoView(true);", element1);
                 Thread.Sleep(500);
+                element1.Clear();
                 driver.FindElement(By.Name("/atg/commerce/order/purchase/ShippingInfoFormHandler.shipContactInfo.phoneNumber")).SendKeys(infor.address.Countrycallingcode.Substring(2) + infor.address.Phonenumber.Substring(2));
                 Thread.Sleep(1000);
                 element1 = driver.FindElement(By.XPath("//input[@class='btn btn--matches-done']"));
@@ -587,27 +591,6 @@ namespace hotmailCheck.Controllers
                 Thread.Sleep(1000);
                 element1.Click();
                 _ = driver.Manage().Timeouts().ImplicitWait;
-                WebDriverWait driverWait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-                try
-                {
-                    driverWait.Until(ExpectedConditions.ElementExists(By.Id("asEnteredNoMatch")));
-                    element1 = driver.FindElement(By.Id("asEnteredNoMatch"));
-                    driver.ExecuteScript("arguments[0].scrollIntoView(true);", element1);
-                    Thread.Sleep(1000);
-                    element1.Click();
-                    Thread.Sleep(5000);
-                }
-                catch
-                {
-                    //div/div/div[3]/button
-                    driverWait.Until(ExpectedConditions.ElementExists(By.XPath("//div[@class='modal__dialog focus']/div/div[3]/button")));
-                    element1 = driver.FindElement(By.XPath("//div[@class='modal__dialog focus']/div/div[3]/button"));
-                    driver.ExecuteScript("arguments[0].scrollIntoView(true);", element1);
-                    Thread.Sleep(1000);
-                    element1.Click();
-                    Thread.Sleep(5000);
-                }
-                _ = driver.Manage().Timeouts().ImplicitWait; ;
             }
             catch { }
         }
@@ -638,27 +621,62 @@ namespace hotmailCheck.Controllers
                 }
                 if (infor != null)
                 {
-                    addShipping(driver, infor, index);
-                    IWebElement errElement = null;
-                    Thread.Sleep(1000);
+                    addShipping(driver, infor);
                     try
                     {
-                        errElement = driver.FindElement(By.XPath("//aside[@class='alert alert--error']"));
+                        string modalElementErr = driver.FindElement(By.XPath("//div[@class='modal__dialog focus']")).GetAttribute("data-modal-name");
+                        while(modalElementErr != null )
+                        {
+                            switch (modalElementErr)
+                            {
+                                case "partial-ra":
+                                    try
+                                    {
+                                        element1 = driver.FindElement(By.XPath("//span[@data-trigger='Use the Address You Entered']"));
+                                        driver.ExecuteScript("arguments[0].scrollIntoView(true);", element1);
+                                        Thread.Sleep(500);
+                                        element1.Click();
+                                        Thread.Sleep(3000);
+                                        element1 = driver.FindElement(By.XPath("//button[@class='btn--large mr-0 partial-matches-done']"));
+                                        driver.ExecuteScript("arguments[0].scrollIntoView(true);", element1);
+                                        Thread.Sleep(1000);
+                                        element1.Click();
+                                        _ = driver.Manage().Timeouts().ImplicitWait;
+                                    }
+                                    catch 
+                                    {
+                                        return false;
+                                    }
+                                    break;
+                                case "matches-ra":
+                                    driverWait.Until(ExpectedConditions.ElementExists(By.XPath("//div[@class='modal__dialog focus']/div/div[3]/button")));
+                                    element1 = driver.FindElement(By.XPath("//div[@class='modal__dialog focus']/div/div[3]/button"));
+                                    driver.ExecuteScript("arguments[0].scrollIntoView(true);", element1);
+                                    Thread.Sleep(1000);
+                                    element1.Click();
+                                    Thread.Sleep(5000);
+                                    break;
+                                case "nomatches-ra":
+                                    try
+                                    {
+                                        driverWait.Until(ExpectedConditions.ElementExists(By.Id("asEnteredNoMatch")));
+                                        element1 = driver.FindElement(By.Id("asEnteredNoMatch"));
+                                        driver.ExecuteScript("arguments[0].scrollIntoView(true);", element1);
+                                        Thread.Sleep(1000);
+                                        element1.Click();
+                                        Thread.Sleep(5000);
+                                    }
+                                    catch
+                                    {
+                                        return false;
+                                    }
+                                    break;
+                            }
+                            driver.FindElement(By.XPath("//div[@class='modal__dialog focus']")).GetAttribute("data-modal-name");
+                        }
+                        
                     }
                     catch { }
-                    while (errElement != null)
-                    {
-
-                        addShippingAgain(driver);
-                        try
-                        {
-                            errElement = driver.FindElement(By.XPath("//aside[@class='alert alert--error']"));
-                        }
-                        catch
-                        {
-                            errElement = null;
-                        }
-                    }
                     return true;
                 }
                 else

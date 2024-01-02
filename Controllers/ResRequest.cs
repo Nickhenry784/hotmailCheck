@@ -137,38 +137,46 @@ namespace hotmailCheck.Controllers
                     MaxTimeout = 10000
                 };
             }
-            var client = new RestClient(options);
-            var request = new RestRequest();
-            request.AddHeader("X-Requested-With", "XMLHttpRequest");
-            request.AddHeader("accept", "application/json, text/javascript, */*; q=0.01");
-            request.AddHeader("Connection", "keep-alive");
-            request.AddHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-            request.AddHeader("accept-language", "vi,en-US;q=0.9,en;q=0.8");
-            request.AddHeader("Sec-Fetch-Mode", "cors");
-            request.AddHeader("Cookie", cookie);
-            request.AddHeader("Sec-Fetch-Site", "same-origin");
-            request.AddHeader("Sec-Fetch-Dest", "empty");
-            request.AddHeader("referer", "https://www.minuteinbox.com/");
-            request.AddHeader("Origin", "https://www.minuteinbox.com/");
-            request.AddHeader("sec-ch-ua-mobile", "?0");
-            request.AddHeader("sec-ch-ua-platform", "\"Windows\"");
-            request.AddHeader("sec-ch-ua", "\"Not_A Brand\";v=\"8\", \"Chromium\";v=\"119\", \"Google Chrome\";v=\"119\"");
-            request.Method = Method.Post;
-            string json = string.Format("emailInput={0}&format=json", addressMail.Split('@')[0]);
-            request.AddParameter("application/json", json, ParameterType.RequestBody);
-            var response = await client.ExecuteAsync(request);
-            if (response.StatusCode == HttpStatusCode.OK)
+            try
             {
-                return "ok";
+                var client = new RestClient(options);
+                var request = new RestRequest();
+                request.AddHeader("X-Requested-With", "XMLHttpRequest");
+                request.AddHeader("accept", "application/json, text/javascript, */*; q=0.01");
+                request.AddHeader("Connection", "keep-alive");
+                request.AddHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+                request.AddHeader("accept-language", "vi,en-US;q=0.9,en;q=0.8");
+                request.AddHeader("Sec-Fetch-Mode", "cors");
+                request.AddHeader("Cookie", cookie);
+                request.AddHeader("Sec-Fetch-Site", "same-origin");
+                request.AddHeader("Sec-Fetch-Dest", "empty");
+                request.AddHeader("referer", "https://www.minuteinbox.com/");
+                request.AddHeader("Origin", "https://www.minuteinbox.com/");
+                request.AddHeader("sec-ch-ua-mobile", "?0");
+                request.AddHeader("sec-ch-ua-platform", "\"Windows\"");
+                request.AddHeader("sec-ch-ua", "\"Not_A Brand\";v=\"8\", \"Chromium\";v=\"119\", \"Google Chrome\";v=\"119\"");
+                request.Method = Method.Post;
+                string json = string.Format("emailInput={0}&format=json", addressMail.Split('@')[0]);
+                request.AddParameter("application/json", json, ParameterType.RequestBody);
+                var response = await client.ExecuteAsync(request);
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    return "ok";
+                }
+                else
+                {
+                    string[] slipMi = cookie.Split("MI=");
+                    string[] duoiSlipMi = slipMi[1].Split("%40milkcreeks.com");
+                    string newCookie = slipMi[0] + "MI=" + Uri.EscapeUriString(addressMail) + duoiSlipMi[1];
+                    deleteEmail(newCookie, proxy);
+                    return newCookie;
+                }
             }
-            else
+            catch 
             {
-                string[] slipMi = cookie.Split("MI=");
-                string[] duoiSlipMi = slipMi[1].Split("%40milkcreeks.com");
-                string newCookie = slipMi[0] + "MI=" + Uri.EscapeUriString(addressMail) + duoiSlipMi[1];
-                deleteEmail(newCookie,proxy);
-                return newCookie;
+                return null;
             }
+            
         }
 
         public async Task<string> readMail(string cookie, string url, string proxy)
@@ -183,30 +191,36 @@ namespace hotmailCheck.Controllers
                     MaxTimeout = 10000
                 };
             }
-            var client = new RestClient(options);
-            var request = new RestRequest();
-            request.AddHeader("X-Requested-With", "XMLHttpRequest");
-            request.AddHeader("accept", "application/json, text/javascript, */*; q=0.01");
-            request.AddHeader("Connection", "keep-alive");
-            request.AddHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-            request.AddHeader("accept-language", "vi,en-US;q=0.9,en;q=0.8");
-            request.AddHeader("Sec-Fetch-Mode", "cors");
-            request.AddHeader("Cookie", cookie);
-            request.AddHeader("Sec-Fetch-Site", "same-origin");
-            request.AddHeader("Sec-Fetch-Dest", "empty");
-            request.AddHeader("referer", "https://www.minuteinbox.com/");
-            request.AddHeader("Origin", "https://www.minuteinbox.com/");
-            request.AddHeader("sec-ch-ua-mobile", "?0");
-            request.AddHeader("sec-ch-ua-platform", "\"Windows\"");
-            request.AddHeader("sec-ch-ua", "\"Not_A Brand\";v=\"8\", \"Chromium\";v=\"119\", \"Google Chrome\";v=\"119\"");
-            request.Method = Method.Get;
-            var response = await client.ExecuteAsync(request);
-            if (response.StatusCode == HttpStatusCode.OK)
+            try
             {
-                return response.Content.ToString() ;
+                var client = new RestClient(options);
+                var request = new RestRequest();
+                request.AddHeader("X-Requested-With", "XMLHttpRequest");
+                request.AddHeader("accept", "application/json, text/javascript, */*; q=0.01");
+                request.AddHeader("Connection", "keep-alive");
+                request.AddHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+                request.AddHeader("accept-language", "vi,en-US;q=0.9,en;q=0.8");
+                request.AddHeader("Sec-Fetch-Mode", "cors");
+                request.AddHeader("Cookie", cookie);
+                request.AddHeader("Sec-Fetch-Site", "same-origin");
+                request.AddHeader("Sec-Fetch-Dest", "empty");
+                request.AddHeader("referer", "https://www.minuteinbox.com/");
+                request.AddHeader("Origin", "https://www.minuteinbox.com/");
+                request.AddHeader("sec-ch-ua-mobile", "?0");
+                request.AddHeader("sec-ch-ua-platform", "\"Windows\"");
+                request.AddHeader("sec-ch-ua", "\"Not_A Brand\";v=\"8\", \"Chromium\";v=\"119\", \"Google Chrome\";v=\"119\"");
+                request.Method = Method.Get;
+                var response = await client.ExecuteAsync(request);
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    return response.Content.ToString();
+                }
+                else
+                {
+                    return null;
+                }
             }
-            else
-            {
+            catch {
                 return null;
             }
         }
@@ -227,30 +241,37 @@ namespace hotmailCheck.Controllers
                     MaxTimeout = 10000
                 };
             }
-            var client = new RestClient(options);
-            var request = new RestRequest();
-            request.AddHeader("X-Requested-With", "XMLHttpRequest");
-            request.AddHeader("accept", "application/json, text/javascript, */*; q=0.01");
-            request.AddHeader("Connection", "keep-alive");
-            request.AddHeader("accept-language", "vi,en-US;q=0.9,en;q=0.8");
-            request.AddHeader("Sec-Fetch-Mode", "cors");
-            request.AddHeader("Cookie", cookie);
-            request.AddHeader("Sec-Fetch-Site", "same-origin");
-            request.AddHeader("Sec-Fetch-Dest", "empty");
-            request.AddHeader("referer", "https://www.minuteinbox.com/");
-            request.AddHeader("sec-ch-ua-mobile", "?0");
-            request.AddHeader("sec-ch-ua-platform", "\"Windows\"");
-            request.AddHeader("sec-ch-ua", "\"Not_A Brand\";v=\"8\", \"Chromium\";v=\"119\", \"Google Chrome\";v=\"119\"");
-            request.Method = Method.Get;
-            var response = client.Execute(request);
-            if (response.StatusCode == HttpStatusCode.OK)
+            try
             {
-                return true;
-            }
-            else
+                var client = new RestClient(options);
+                var request = new RestRequest();
+                request.AddHeader("X-Requested-With", "XMLHttpRequest");
+                request.AddHeader("accept", "application/json, text/javascript, */*; q=0.01");
+                request.AddHeader("Connection", "keep-alive");
+                request.AddHeader("accept-language", "vi,en-US;q=0.9,en;q=0.8");
+                request.AddHeader("Sec-Fetch-Mode", "cors");
+                request.AddHeader("Cookie", cookie);
+                request.AddHeader("Sec-Fetch-Site", "same-origin");
+                request.AddHeader("Sec-Fetch-Dest", "empty");
+                request.AddHeader("referer", "https://www.minuteinbox.com/");
+                request.AddHeader("sec-ch-ua-mobile", "?0");
+                request.AddHeader("sec-ch-ua-platform", "\"Windows\"");
+                request.AddHeader("sec-ch-ua", "\"Not_A Brand\";v=\"8\", \"Chromium\";v=\"119\", \"Google Chrome\";v=\"119\"");
+                request.Method = Method.Get;
+                var response = client.Execute(request);
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }catch (Exception ex)
             {
                 return false;
             }
+            
         }
 
         public async Task<List<Mail>> getMailInbox (string cookie, string proxy)
@@ -265,31 +286,38 @@ namespace hotmailCheck.Controllers
                     MaxTimeout = 10000
                 };
             }
-            var client = new RestClient(options);
-            var request = new RestRequest();
-            request.AddHeader("X-Requested-With", "XMLHttpRequest");
-            request.AddHeader("accept", "application/json, text/javascript, */*; q=0.01");
-            request.AddHeader("Connection", "keep-alive");
-            request.AddHeader("accept-language", "vi,en-US;q=0.9,en;q=0.8");
-            request.AddHeader("Sec-Fetch-Mode", "cors");
-            request.AddHeader("Cookie", cookie);
-            request.AddHeader("Sec-Fetch-Site", "same-origin");
-            request.AddHeader("Sec-Fetch-Dest", "empty");
-            request.AddHeader("referer", "https://www.minuteinbox.com/");
-            request.AddHeader("sec-ch-ua-mobile", "?0");
-            request.AddHeader("sec-ch-ua-platform", "\"Windows\"");
-            request.AddHeader("sec-ch-ua", "\"Not_A Brand\";v=\"8\", \"Chromium\";v=\"119\", \"Google Chrome\";v=\"119\"");
-            request.Method = Method.Get;
-            var response = await client.ExecuteAsync(request);
-            if (response.StatusCode == HttpStatusCode.OK)
+            try
             {
-                List<Mail> mail = JsonConvert.DeserializeObject<List<Mail>>(response.Content);
-                return mail;
+                var client = new RestClient(options);
+                var request = new RestRequest();
+                request.AddHeader("X-Requested-With", "XMLHttpRequest");
+                request.AddHeader("accept", "application/json, text/javascript, */*; q=0.01");
+                request.AddHeader("Connection", "keep-alive");
+                request.AddHeader("accept-language", "vi,en-US;q=0.9,en;q=0.8");
+                request.AddHeader("Sec-Fetch-Mode", "cors");
+                request.AddHeader("Cookie", cookie);
+                request.AddHeader("Sec-Fetch-Site", "same-origin");
+                request.AddHeader("Sec-Fetch-Dest", "empty");
+                request.AddHeader("referer", "https://www.minuteinbox.com/");
+                request.AddHeader("sec-ch-ua-mobile", "?0");
+                request.AddHeader("sec-ch-ua-platform", "\"Windows\"");
+                request.AddHeader("sec-ch-ua", "\"Not_A Brand\";v=\"8\", \"Chromium\";v=\"119\", \"Google Chrome\";v=\"119\"");
+                request.Method = Method.Get;
+                var response = await client.ExecuteAsync(request);
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    List<Mail> mail = JsonConvert.DeserializeObject<List<Mail>>(response.Content);
+                    return mail;
+                }
+                else
+                {
+                    return null;
+                }
             }
-            else
-            {
+            catch {
                 return null;
             }
+            
         }
 
         public async Task<List<Mail>> getMailInboxWithWebClient(string cookie, string proxy)
@@ -344,8 +372,7 @@ namespace hotmailCheck.Controllers
 
                 }
                 else {
-                    var proxyURI = new Uri(string.Format("{0}:{1}", proxyAcc.Split(':')[0], proxyAcc.Split(':')[1]));
-                    //Set credentials
+                    var proxyURI = new Uri(string.Format("http://{0}:{1}", proxyAcc.Split(':')[0], proxyAcc.Split(':')[1]));
                     ICredentials credentials = CredentialCache.DefaultNetworkCredentials;
                     proxy = new WebProxy(proxyURI, true, null, credentials);
                 }

@@ -332,6 +332,10 @@ namespace hotmailCheck
                                 addLogToDataGridView1(index, 6, "Đã hết CC. Vui lòng add vào");
                                 return;
                             }
+                            dataGridView2.Invoke(new Action(() =>
+                            {
+                                dataGridView2.Rows[indexVisa].DefaultCellStyle.BackColor = Color.Yellow;
+                            }));
                             IJavaScriptExecutor javascriptExecutor = (IJavaScriptExecutor)driver;
                             try
                             {
@@ -395,97 +399,134 @@ namespace hotmailCheck
                                 }
                             }
                             Thread.Sleep(1000);
-                            addLogToDataGridView1(index, 6, "Click Save");
+                            addLogToDataGridView1(index, 6, "Send ccv");
+                            if (visaArr.Length == 4)
+                            {
+                                driver.FindElement(By.Id("cvvToken")).SendKeys(visaArr[3]);
+                                addLogToDataGridView1(index, 6, "Click Save");
+                                Thread.Sleep(1000);
+                            }
+                            else
+                            {
+                                driver.FindElement(By.Id("cvvToken")).SendKeys("111");
+                                addLogToDataGridView1(index, 6, "Click Save");
+                                Thread.Sleep(1000);
+                            }
                             driver.FindElement(By.Id("pidlddc-button-saveButton")).Click();
                             randomTime();
                             addLogToDataGridView1(index, 6, "Check Status");
                             try
                             {
                                 randomTime();
-                                WebDriverWait driverWait1 = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
-                                driverWait1.Until(ExpectedConditions.ElementIsVisible(By.XPath("//span[@data-automation-id='error-message']")));
-                                string messager = driver.FindElement(By.XPath("//span[@data-automation-id='error-message']")).Text;
-                                switch (messager)
+                                WebDriverWait driverWait1 = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+                                string textSuccess = driverWait1.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[@id='Panel31-headerText']"))).Text;
+                                if (!string.IsNullOrEmpty(textSuccess))
                                 {
-                                    case "Check your security code. There appears to be an error in it.":
-                                        saveData.updateStatusCC(dataGridView2.Rows[indexVisa].Cells[0].Value.ToString(), "Success");
+                                    saveData.updateStatusCC(dataGridView2.Rows[indexVisa].Cells[0].Value.ToString(), "Success");
 
-                                        dataGridView2.Invoke(new Action(() =>
-                                        {
-                                            dataGridView2.Rows[indexVisa].Cells[1].Value = "Success";
-                                            dataGridView2.Rows[indexVisa].DefaultCellStyle.BackColor = Color.LightGreen;
-                                        }));
-                                        try
-                                        {
+                                    dataGridView2.Invoke(new Action(() =>
+                                    {
+                                        dataGridView2.Rows[indexVisa].Cells[1].Value = "Success";
+                                        dataGridView2.Rows[indexVisa].DefaultCellStyle.BackColor = Color.LightGreen;
+                                    }));
+                                    try
+                                    {
 
 
-                                            addLogToDataGridView1(index, 6, "Save File");
-                                            utils.WriteDebug(dataGridView2.Rows[indexVisa].Cells[0].Value.ToString());
-                                        }
-                                        catch { }
-                                        addVisa++;
-                                        saveData.updateQualityByID(username, addVisa.ToString());
-                                        dataGridView1.Invoke(new Action(() =>
-                                        {
-                                            dataGridView1.Rows[index].Cells[5].Value = addVisa.ToString();
-                                        }));
-                                        break;
-                                    case "Check the info you entered. It doesn't match the info for this card.":
-                                        saveData.updateStatusCC(dataGridView2.Rows[indexVisa].Cells[0].Value.ToString(), "Failed");
-                                        dataGridView2.Invoke(new Action(() =>
-                                        {
-                                            dataGridView2.Rows[indexVisa].Cells[1].Value = "Failed";
-                                            dataGridView2.Rows[indexVisa].DefaultCellStyle.BackColor = Color.Red;
-                                        }));
-                                        addVisa++;
-                                        saveData.updateQualityByID(username, addVisa.ToString());
-                                        dataGridView1.Invoke(new Action(() =>
-                                        {
-                                            dataGridView1.Rows[index].Cells[5].Value = addVisa.ToString();
-                                        }));
-                                        break;
-                                    case "Check the city in your address. There appears to be an error in it.":
-                                        addLogToDataGridView1(index, 6, "Error City");
-                                        listCC.Enqueue(indexVisa);
-                                        break;
-                                    case "Check your address. There appears to be an error in it.":
-                                        addLogToDataGridView1(index, 6, "Error Address");
-                                        listCC.Enqueue(indexVisa);
-                                        break;
-                                    case "Check the Zip or Postal code in your address. There appears to be an error in it.":
-                                        addLogToDataGridView1(index, 6, "Error ZipCode");
-                                        listCC.Enqueue(indexVisa);
-                                        break;
-                                    case "For security purposes, captcha verification is required.":
-                                        addLogToDataGridView1(index, 6, "Dính captcha!");
-                                        addVisa = 5;
-                                        listCC.Enqueue(indexVisa);
-                                        break;
-                                    default:
-                                        addLogToDataGridView1(index, 6, "Không phát hiện lỗi. Chạy lại");
-                                        addVisa = 5;
-                                        listCC.Enqueue(indexVisa);
-                                        break;
+                                        addLogToDataGridView1(index, 6, "Save File");
+                                        utils.WriteDebug(dataGridView2.Rows[indexVisa].Cells[0].Value.ToString());
+                                    }
+                                    catch { }
+                                    addVisa++;
+                                    saveData.updateQualityByID(username, addVisa.ToString());
+                                    dataGridView1.Invoke(new Action(() =>
+                                    {
+                                        dataGridView1.Rows[index].Cells[5].Value = addVisa.ToString();
+                                    }));
                                 }
                             }
                             catch
                             {
-                                Console.WriteLine("Error");
                                 try
                                 {
-                                    IWebElement webElement = driver.FindElement(By.XPath("//i[@data-icon-name='AlertSolid']"));
-                                    if (webElement != null)
+                                    randomTime();
+                                    WebDriverWait driverWait1 = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+                                    driverWait1.Until(ExpectedConditions.ElementIsVisible(By.XPath("//span[@data-automation-id='error-message']")));
+                                    string messager = driver.FindElement(By.XPath("//span[@data-automation-id='error-message']")).Text;
+                                    switch (messager)
                                     {
-                                        addLogToDataGridView1(index, 6, "Không thể add visa, Thoát account");
-                                        addVisa = 5;
-                                        listCC.Enqueue(indexVisa);
+                                        case "Check your security code. There appears to be an error in it.":
+                                            saveData.updateStatusCC(dataGridView2.Rows[indexVisa].Cells[0].Value.ToString(), "Failed");
+                                            dataGridView2.Invoke(new Action(() =>
+                                            {
+                                                dataGridView2.Rows[indexVisa].Cells[1].Value = "Failed";
+                                                dataGridView2.Rows[indexVisa].DefaultCellStyle.BackColor = Color.Red;
+                                            }));
+                                            addVisa++;
+                                            saveData.updateQualityByID(username, addVisa.ToString());
+                                            dataGridView1.Invoke(new Action(() =>
+                                            {
+                                                dataGridView1.Rows[index].Cells[5].Value = addVisa.ToString();
+                                            }));
+                                            break;
+                                        case "Check the info you entered. It doesn't match the info for this card.":
+                                            saveData.updateStatusCC(dataGridView2.Rows[indexVisa].Cells[0].Value.ToString(), "Failed");
+                                            dataGridView2.Invoke(new Action(() =>
+                                            {
+                                                dataGridView2.Rows[indexVisa].Cells[1].Value = "Failed";
+                                                dataGridView2.Rows[indexVisa].DefaultCellStyle.BackColor = Color.Red;
+                                            }));
+                                            addVisa++;
+                                            saveData.updateQualityByID(username, addVisa.ToString());
+                                            dataGridView1.Invoke(new Action(() =>
+                                            {
+                                                dataGridView1.Rows[index].Cells[5].Value = addVisa.ToString();
+                                            }));
+                                            break;
+                                        case "Check the city in your address. There appears to be an error in it.":
+                                            addLogToDataGridView1(index, 6, "Error City");
+                                            listCC.Enqueue(indexVisa);
+                                            break;
+                                        case "Check your address. There appears to be an error in it.":
+                                            addLogToDataGridView1(index, 6, "Error Address");
+                                            listCC.Enqueue(indexVisa);
+                                            break;
+                                        case "Check the Zip or Postal code in your address. There appears to be an error in it.":
+                                            addLogToDataGridView1(index, 6, "Error ZipCode");
+                                            listCC.Enqueue(indexVisa);
+                                            break;
+                                        case "For security purposes, captcha verification is required.":
+                                            addLogToDataGridView1(index, 6, "Dính captcha!");
+                                            addVisa = 5;
+                                            listCC.Enqueue(indexVisa);
+                                            break;
+                                        default:
+                                            addLogToDataGridView1(index, 6, "Không phát hiện lỗi. Chạy lại");
+                                            addVisa = 5;
+                                            listCC.Enqueue(indexVisa);
+                                            break;
                                     }
                                 }
                                 catch
                                 {
+                                    Console.WriteLine("Error");
+                                    try
+                                    {
+                                        IWebElement webElement = driver.FindElement(By.XPath("//i[@data-icon-name='AlertSolid']"));
+                                        if (webElement != null)
+                                        {
+                                            addLogToDataGridView1(index, 6, "Không thể add visa, Thoát account");
+                                            addVisa = 5;
+                                            listCC.Enqueue(indexVisa);
+                                        }
+                                    }
+                                    catch
+                                    {
 
+                                    }
                                 }
                             }
+
                             driver.FindElement(By.XPath("//i[@data-icon-name='Cancel']")).Click();
                             Thread.Sleep(1000);
                         }
@@ -595,6 +636,11 @@ namespace hotmailCheck
                         addLogToDataGridView4(index, 6, "Phục hồi Mail");
                         string username = dataGridView4.Rows[index].Cells[1].Value.ToString();
                         string mailPhucHoi = resRequest.returnEmail(cookie, username, dataGridView4.Rows[index].Cells[4].Value.ToString()).Result;
+                        if (string.IsNullOrEmpty(mailPhucHoi))
+                        {
+                            addLogToDataGridView4(index, 6, "Không get được mail hồi phục");
+                            continue;
+                        }
                         while (!mailPhucHoi.Equals("ok"))
                         {
                             addLogToDataGridView4(index, 6, "Phục hồi Mail lại");
@@ -792,6 +838,10 @@ namespace hotmailCheck
                                     addLogToDataGridView4(index, 6, "Đã hết CC. Vui lòng add vào");
                                     return;
                                 }
+                                dataGridView3.Invoke(new Action(() =>
+                                {
+                                    dataGridView3.Rows[indexVisa].DefaultCellStyle.BackColor = Color.Yellow;
+                                }));
                                 string[] ccInformation = dataGridView3.Rows[indexVisa].Cells[0].Value.ToString().Split('|');
                                 addLogToDataGridView4(index, 6, "Bắt đầu add CC");
                                 bool startAddCC = barnesAutomatic.startAddVisaAndCheck(driver, index, ccInformation);
@@ -862,7 +912,7 @@ namespace hotmailCheck
                                         }
                                     }
                                     Thread.Sleep(2000);
-                                    if (textErr.Equals("Sorry! Your order cannot be processed due to an error with the Card Number entered. Please edit your card details and try again.") || textErr.Equals("The Security Code you entered is incorrect.\r\nPlease try again or contact Customer Service for assistance."))
+                                    if (textErr.Equals("Sorry! Your order cannot be processed due to an error with the Card Number entered. Please edit your card details and try again.") || textErr.Equals("The Security Code you entered is incorrect.\r\nPlease try again or contact Customer Service for assistance.") || textErr.Equals("Sorry! Your order cannot be processed because your card is expired. Please update and try again"))
                                     {
                                         try
                                         {
@@ -917,7 +967,7 @@ namespace hotmailCheck
                                         }));
                                         addVisa++;
                                         saveData.updateQualityByUsernameBarnes(dataGridView4.Rows[index].Cells[1].Value.ToString(), addVisa.ToString());
-                                        dataGridView3.Invoke(new Action(() =>
+                                        dataGridView4.Invoke(new Action(() =>
                                         {
                                             dataGridView4.Rows[index].Cells[5].Value = addVisa.ToString();
                                         }));
@@ -1019,11 +1069,7 @@ namespace hotmailCheck
                     dataGridView5.Rows.Add(email, "Newyork123@", proxyItems, "0", "Đang chạy!");
                 }));
                 int index = findIndexDataGridView(email);
-                try
-                {
-                    listRun.Enqueue(index);
-                }
-                catch { }
+
                 addLogToDataGridView5(index, 4, "Setting Chrome!");
                 var options = new ChromeOptions();
                 string userAgent = listUserAgent[Faker.RandomNumber.Next(0, listUserAgent.Count - 1)];
@@ -1076,37 +1122,115 @@ namespace hotmailCheck
                         barnesAutomatic.signUpAccount(driver, email, "Newyork123@", fisrtName, lastName);
                         Thread.Sleep(2000);
                         List<Mail> mailInput = resRequest.getMailInbox(cookie, proxyItems).Result;
-                        if (mailInput.Count != 1)
+                        if (mailInput == null)
                         {
-                            dataGridView5.Invoke(new Action(() =>
-                            {
-                                dataGridView5.Rows[index].DefaultCellStyle.BackColor = Color.LightGreen;
-                            }));
+                            driver.SwitchTo().NewWindow(WindowType.Tab);
+                            driver.Navigate().GoToUrl("https://www.minuteinbox.com/");
+                            _ = driver.Manage().Timeouts().ImplicitWait;
+                            randomTime();
                             try
                             {
-                                saveData.saveAccountBarnes(email, "Newyork123@", "Success", proxyItems, "0", ""); ;
-                            }
-                            catch { }
-                            addLogToDataGridView5(index, 4, "Save account thành công!");
+                                List<IWebElement> newMail = driver.FindElements(By.XPath("//tr[@class='hidden-xs hidden-sm klikaciRadek newMail']")).Cast<IWebElement>().ToList();
+                                if (newMail.Count > 1)
+                                {
+                                    dataGridView5.Invoke(new Action(() =>
+                                    {
+                                        dataGridView5.Rows[index].DefaultCellStyle.BackColor = Color.LightGreen;
+                                    }));
+                                    try
+                                    {
+                                        listRun.Enqueue(index);
+                                    }
+                                    catch { }
+                                    try
+                                    {
+                                        saveData.saveAccountBarnes(email, "Newyork123@", "Success", proxyItems, "0", ""); ;
+                                    }
+                                    catch { }
+                                    addLogToDataGridView5(index, 4, "Save account thành công!");
 
-                            Thread.Sleep(2000);
-                        }
-                        else
-                        {
-                            addLogToDataGridView5(index, 4, "Không thể đăng kí hoặc có lỗi xảy ra");
-                            dataGridView5.Invoke(new Action(() =>
+                                    Thread.Sleep(2000);
+                                }
+                                else
+                                {
+                                    addLogToDataGridView5(index, 4, "Không thể đăng kí hoặc có lỗi xảy ra");
+                                    dataGridView5.Invoke(new Action(() =>
+                                    {
+                                        dataGridView5.Rows[index].DefaultCellStyle.BackColor = Color.Red;
+                                    }));
+                                    try
+                                    {
+                                        driver.Close();
+                                        driver.Quit();
+                                        driver.Dispose();
+                                    }
+                                    catch { }
+                                    continue;
+                                }
+                            }
+                            catch
                             {
-                                dataGridView5.Rows[index].DefaultCellStyle.BackColor = Color.Red;
-                            }));
+                                addLogToDataGridView5(index, 4, "Không thể đăng kí hoặc có lỗi xảy ra");
+                                dataGridView5.Invoke(new Action(() =>
+                                {
+                                    dataGridView5.Rows[index].DefaultCellStyle.BackColor = Color.Red;
+                                }));
+                                try
+                                {
+                                    driver.Close();
+                                    driver.Quit();
+                                    driver.Dispose();
+                                }
+                                catch { }
+                                continue;
+                            }
                             try
                             {
                                 driver.Close();
-                                driver.Quit();
-                                driver.Dispose();
+                                driver.SwitchTo().Window(driver.WindowHandles[0]);
                             }
                             catch { }
-                            continue;
                         }
+                        else
+                        {
+                            if (mailInput.Count != 1)
+                            {
+                                dataGridView5.Invoke(new Action(() =>
+                                {
+                                    dataGridView5.Rows[index].DefaultCellStyle.BackColor = Color.LightGreen;
+                                }));
+                                try
+                                {
+                                    listRun.Enqueue(index);
+                                }
+                                catch { }
+                                try
+                                {
+                                    saveData.saveAccountBarnes(email, "Newyork123@", "Success", proxyItems, "0", ""); ;
+                                }
+                                catch { }
+                                addLogToDataGridView5(index, 4, "Save account thành công!");
+
+                                Thread.Sleep(2000);
+                            }
+                            else
+                            {
+                                addLogToDataGridView5(index, 4, "Không thể đăng kí hoặc có lỗi xảy ra");
+                                dataGridView5.Invoke(new Action(() =>
+                                {
+                                    dataGridView5.Rows[index].DefaultCellStyle.BackColor = Color.Red;
+                                }));
+                                try
+                                {
+                                    driver.Close();
+                                    driver.Quit();
+                                    driver.Dispose();
+                                }
+                                catch { }
+                                continue;
+                            }
+                        }
+
                         if (signUpNoCheck)
                         {
                             continue;
@@ -1242,7 +1366,7 @@ namespace hotmailCheck
                         try
                         {
 
-                            int addVisa = getQualityAddBarnet(dataGridView5.Rows[index].Cells[0].Value.ToString());
+                            int addVisa = 0;
                             _ = driver.Manage().Timeouts().ImplicitWait;
                             while (addVisa < (int)numericUpDown8.Value)
                             {
@@ -1257,6 +1381,10 @@ namespace hotmailCheck
                                     addLogToDataGridView5(index, 4, "Đã hết CC. Vui lòng add vào");
                                     return;
                                 }
+                                dataGridView6.Invoke(new Action(() =>
+                                {
+                                    dataGridView6.Rows[indexVisa].DefaultCellStyle.BackColor = Color.Yellow;
+                                }));
                                 string[] ccInformation = dataGridView6.Rows[indexVisa].Cells[0].Value.ToString().Split('|');
                                 addLogToDataGridView5(index, 4, "Bắt đầu add CC");
                                 bool startAddCC = barnesAutomatic.startAddVisaAndCheck(driver, index, ccInformation);
@@ -1334,7 +1462,7 @@ namespace hotmailCheck
                                         }
                                     }
                                     Thread.Sleep(2000);
-                                    if (textErr.Equals("Sorry! Your order cannot be processed due to an error with the Card Number entered. Please edit your card details and try again.") || textErr.Equals("The Security Code you entered is incorrect.\r\nPlease try again or contact Customer Service for assistance."))
+                                    if (textErr.Equals("Sorry! Your order cannot be processed due to an error with the Card Number entered. Please edit your card details and try again.") || textErr.Equals("The Security Code you entered is incorrect.\r\nPlease try again or contact Customer Service for assistance.") || textErr.Equals("Sorry! Your order cannot be processed because your card is expired. Please update and try again"))
                                     {
                                         try
                                         {
@@ -1761,7 +1889,7 @@ namespace hotmailCheck
             button7.Enabled = false;
             button8.Enabled = true;
             listRun = new Queue<int>();
-            for (int z = (int)numericUpDown14.Value; z < dataGridView1.Rows.Count; z++)
+            for (int z = (int)numericUpDown14.Value - 1; z < dataGridView1.Rows.Count; z++)
             {
                 if (dataGridView1.Rows[z].Cells[3].Value.ToString().Equals("Unchecked"))
                 {
@@ -2622,18 +2750,33 @@ namespace hotmailCheck
 
         private void numericUpDown14_ValueChanged(object sender, EventArgs e)
         {
-            if ((int)numericUpDown14.Value > dataGridView1.Rows.Count)
+            if (dataGridView1.Rows.Count > 0)
             {
-                numericUpDown14.Value = dataGridView1.Rows.Count;
+                if ((int)numericUpDown14.Value > dataGridView1.Rows.Count)
+                {
+                    numericUpDown14.Value = dataGridView1.Rows.Count;
+                }
+            }
+            else
+            {
+                numericUpDown14.Value = 1;
             }
         }
 
         private void numericUpDown13_ValueChanged(object sender, EventArgs e)
         {
-            if ((int)numericUpDown13.Value > dataGridView4.Rows.Count)
+            if (dataGridView4.Rows.Count > 0)
             {
-                numericUpDown13.Value = dataGridView4.Rows.Count;
+                if ((int)numericUpDown13.Value > dataGridView4.Rows.Count)
+                {
+                    numericUpDown13.Value = dataGridView4.Rows.Count;
+                }
             }
+            else
+            {
+                numericUpDown13.Value = 1;
+            }
+
         }
     }
 }
